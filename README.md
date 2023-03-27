@@ -5,6 +5,10 @@ Repositories, migrations and tests with model
 We write the necessary model.
 The function writes table queries, repositories and tests for each model in the migrations folder.
 
+## Install 
+```
+go get  github.com/realtemirov/repoimpl
+```
 
 ## Migrations
 ```
