@@ -114,7 +114,9 @@ func createDbQuery(nameOfModel string, fields []*field) string {
 func goTypeToDBType(goType string) string {
 	var result string
 	switch goType {
-	case "int":
+	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
+		result = "INTEGER"
+	case "float32", "float64":
 		result = "NUMERIC"
 	case "string":
 		result = "TEXT"
