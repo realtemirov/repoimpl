@@ -28,7 +28,7 @@ Creates **migration_user.sql** in the **migration** folder
 ```
 CREATE TABLE IF NOT EXITS "users" (
     "username" TEXT,
-	"password" TEXT
+    "password" TEXT
 );
 ```
 
@@ -48,7 +48,7 @@ if err != nil {
 **migration_user.sql**
 ```
 CREATE TABLE IF NOT EXITS "users" (
-	"user_name" TEXT,
-	"pass_word" TEXT
+    "user_name" TEXT,
+    "pass_word" TEXT
 );
 ```
