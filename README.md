@@ -22,7 +22,7 @@ if err != nil {
     panic(err)
 }
 ```
-Repository implement CRUD to *postgres* database with sql package
+Repository implement CRUD to *postgres* database with sql package and creates **interface storage**
 
 ## Migrations
 ```
