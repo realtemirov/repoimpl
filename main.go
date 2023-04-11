@@ -10,17 +10,18 @@ import (
 
 const (
 	migrationPath  = "migration"
-	repositoryPath = "repository"
+	repositoryPath = "storage"
 	testPath       = "test"
 	postgresPath   = "postgres"
+	modelPath      = "model"
 )
 
-// Implement migration SQL queries for all models
+// Implement repository, migration and test
 // Parameters:
 //   - model... : implementation of models with table name and fields
 //
 // Example:
-//   - NewDBTable(models.User{})
+//   - NewProject(models.User{})
 //
 // Returns:
 //   - error: error if something went wrong
@@ -48,8 +49,10 @@ func NewProject(datas ...any) error {
 func NewRepository(datas ...any) error {
 
 	var (
-		storage    strings.Builder
-		interfaces strings.Builder
+		postgresUp   strings.Builder
+		postgresDown strings.Builder
+		storage      strings.Builder
+		interfaces   strings.Builder
 	)
 	err := os.Mkdir(repositoryPath, 0755)
 	if err != nil {
@@ -83,7 +86,7 @@ func NewRepository(datas ...any) error {
 		}
 	}
 	storage.WriteString(storageHeader())
-
+	postgresUp.WriteString(postgresHeader())
 	for _, model := range datas {
 
 		lowerNameOfModel := fieldToDefault(reflect.TypeOf(model).Name())
@@ -103,10 +106,17 @@ func NewRepository(datas ...any) error {
 		storage.WriteString(interfaceName)
 		interfaces.WriteString(interfaceMethods)
 		log.Println("Successful repository implemented")
+		postgresUpString, postgresDownString := postgresInterface(upperNameOfModel, lowerNameOfModel)
+
+		postgresUp.WriteString(postgresUpString)
+		postgresDown.WriteString(postgresDownString)
 	}
+	postgresUp.WriteString(postgresFooter())
+	postgresDown.WriteString(postgresNew())
 	storage.WriteString(storageFooter())
 	storage.WriteString(interfaces.String())
 	storageFile(storage.String())
+	postgresFile(postgresUp.String(), postgresDown.String())
 	log.Println("Succesfull implemented...")
 	return nil
 }
@@ -249,4 +259,60 @@ func clear(response error) error {
 	}
 
 	return response
+}
+
+func NewModels(datas ...any) error {
+	err := os.Mkdir(modelPath, 0755)
+	if err != nil {
+		if strings.Contains(err.Error(), "exists") {
+			fmt.Println("models folder already exist, If you want to create new migration, click something else `y` or `Y`")
+			var answer string
+			fmt.Scanln(&answer)
+			if answer != "y" || answer != "Y" {
+				return nil
+			}
+			err := os.RemoveAll(migrationPath)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		err := os.Mkdir(migrationPath+"/"+postgresPath, 0755)
+		if err != nil {
+			if strings.Contains(err.Error(), "exists") {
+				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `q` or `Q`")
+				var answer string
+				fmt.Scanln(&answer)
+				if answer == "q" || answer == "Q" {
+					return nil
+				}
+				err := os.RemoveAll(migrationPath + "/" + postgresPath)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	for _, model := range datas {
+
+		lowerNameOfModel := fieldToDefault(reflect.TypeOf(model).Name())
+		// upperNameOfModel := reflect.TypeOf(model).Name()
+		valueOfModel := reflect.ValueOf(model)
+		typeOfModel := valueOfModel.Type()
+		numberOfFields := valueOfModel.NumField()
+
+		fieldsOfModel := fields(typeOfModel, numberOfFields)
+
+		log.Println("Starting migration...")
+		init, drop := createDbQuery(lowerNameOfModel, fieldsOfModel)
+		err := migrationFiles(lowerNameOfModel, init, drop)
+		if err != nil {
+			return err
+		}
+		log.Println("Successful migration implemented")
+
+	}
+
+	return nil
 }
