@@ -24,6 +24,14 @@ if err != nil {
 ```
 Repository implement CRUD to *postgres* database with sql package and creates **interface storage**
 
+```
+go run main.go
+```
+./repository
+    ./postgres/
+        ./user.go - CRUD methods
+    ./storage.go - CRUD interfaces
+
 ## Migrations
 ```
 type User struct {
@@ -36,9 +44,12 @@ if err != nil {
     panic(err)
 }
 ```
-
-
 Creates **migration_user.sql** in the **migrations** folder
+
+```
+go run main.go
+```
+
 ```
 CREATE TABLE IF NOT EXITS "users" (
     "username" TEXT,
