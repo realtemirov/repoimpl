@@ -1,4 +1,4 @@
-# repoImpl
+# repoimpl
 Repositories, migrations and tests with model
 
 
@@ -10,6 +10,20 @@ The function writes table queries, repositories and tests for each model in the 
 go get github.com/realtemirov/repoimpl
 ```
 
+## Repository
+```
+type User struct {
+    Username string
+    Password string
+}
+
+err := repoimpl.NewRepository(User{})
+if err != nil {
+    panic(err)
+}
+```
+Repository implement CRUD to *postgres* database with sql package
+
 ## Migrations
 ```
 type User struct {
@@ -17,7 +31,7 @@ type User struct {
     Password string
 }
 
-err := repoImpl.NewDBTable(User{})
+err := repoimpl.NewMigration(User{})
 if err != nil {
     panic(err)
 }
