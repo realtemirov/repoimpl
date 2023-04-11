@@ -7,7 +7,6 @@ import (
 )
 
 func createRepository(upperNameOfModel, lowerNameOfModel string, fields []*field) string {
-	fmt.Println(upperNameOfModel, lowerNameOfModel)
 	str := strings.Builder{}
 
 	str.WriteString(headerOfRepository(upperNameOfModel, lowerNameOfModel, fields))
@@ -63,7 +62,7 @@ func createMethod(upperNameOfModel, lowerNameOfModel string, fields []*field) st
 	str.WriteString("\t// query\n")
 	str.WriteString(fmt.Sprintf("\tquery := `INSERT INTO %ss (` + fieldsOf%s + `", lowerNameOfModel, upperNameOfModel))
 	str.WriteString(") VALUES (")
-	for i, _ := range fields {
+	for i := range fields {
 		if i != len(fields)-1 {
 			str.WriteString(fmt.Sprintf("$%d,", i+1))
 		} else {
