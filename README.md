@@ -24,7 +24,7 @@ if err != nil {
 ```
 
 
-Creates **migration_user.sql** in the **migration** folder
+Creates **migration_user.sql** in the **migrations** folder
 ```
 CREATE TABLE IF NOT EXITS "users" (
     "username" TEXT,
