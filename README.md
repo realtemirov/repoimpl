@@ -27,10 +27,10 @@ Repository implement CRUD to *postgres* database with sql package and creates **
 ```
 go run main.go
 ```
-./repository
-    ./postgres/
-        ./user.go - CRUD methods
-    ./storage.go - CRUD interfaces
+├─ repository \
+&emsp;&emsp;─ postgres \
+&emsp;&emsp;&emsp;─ user.go - CRUD methods \
+&emsp;&emsp;─ storage.go - CRUD interfaces
 
 ## Migrations
 ```
