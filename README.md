@@ -7,7 +7,7 @@ The function writes table queries, repositories and tests for each model in the 
 
 ## Install 
 ```
-go get  github.com/realtemirov/repoimpl
+go get github.com/realtemirov/repoimpl
 ```
 
 ## Migrations
