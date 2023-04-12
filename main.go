@@ -57,7 +57,7 @@ func NewRepository(datas ...any) error {
 	err := os.Mkdir(repositoryPath, 0755)
 	if err != nil {
 		if strings.Contains(err.Error(), "exists") {
-			fmt.Println("repository folder already exist, If you want to create new repository, click something else `q` or `Q`")
+			fmt.Println("repository folder already exist, If you want to create new repository, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
 			if answer == "q" || answer == "Q" {
@@ -72,7 +72,7 @@ func NewRepository(datas ...any) error {
 		err := os.Mkdir(repositoryPath+"/"+postgresPath, 0755)
 		if err != nil {
 			if strings.Contains(err.Error(), "exists") {
-				fmt.Println("repository/postgres folder already exist, If you want to create new repository/postgres, click something else `q` or `Q`")
+				fmt.Println("repository/postgres folder already exist, If you want to create new repository/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
 				if answer == "q" || answer == "Q" {
@@ -125,7 +125,7 @@ func NewMigration(datas ...any) error {
 	err := os.Mkdir(migrationPath, 0755)
 	if err != nil {
 		if strings.Contains(err.Error(), "exists") {
-			fmt.Println("migration folder already exist, If you want to create new migration, click something else `q` or `Q`")
+			fmt.Println("migration folder already exist, If you want to create new migration, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
 			if answer == "q" || answer == "Q" {
@@ -140,7 +140,7 @@ func NewMigration(datas ...any) error {
 		err := os.Mkdir(migrationPath+"/"+postgresPath, 0755)
 		if err != nil {
 			if strings.Contains(err.Error(), "exists") {
-				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `q` or `Q`")
+				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
 				if answer == "q" || answer == "Q" {
@@ -180,7 +180,7 @@ func NewTest(datas ...any) error {
 	err := os.Mkdir(testPath, 0755)
 	if err != nil {
 		if strings.Contains(err.Error(), "exists") {
-			fmt.Println("test folder already exist, If you want to create new test, click something else `q` or `Q`")
+			fmt.Println("test folder already exist, If you want to create new test, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
 			if answer == "q" || answer == "Q" {
@@ -195,7 +195,7 @@ func NewTest(datas ...any) error {
 		err := os.Mkdir(testPath+"/"+postgresPath, 0755)
 		if err != nil {
 			if strings.Contains(err.Error(), "exists") {
-				fmt.Println("test/postgres folder already exist, If you want to create new test/postgres, click something else `q` or `Q`")
+				fmt.Println("test/postgres folder already exist, If you want to create new test/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
 				if answer == "q" || answer == "Q" {
@@ -268,7 +268,7 @@ func NewModels(datas ...any) error {
 			fmt.Println("models folder already exist, If you want to create new migration, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
-			if answer != "y" || answer != "Y" {
+			if strings.ToLower(answer) != "y" {
 				return nil
 			}
 			err := os.RemoveAll(migrationPath)
@@ -280,7 +280,7 @@ func NewModels(datas ...any) error {
 		err := os.Mkdir(migrationPath+"/"+postgresPath, 0755)
 		if err != nil {
 			if strings.Contains(err.Error(), "exists") {
-				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `q` or `Q`")
+				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
 				if answer == "q" || answer == "Q" {
