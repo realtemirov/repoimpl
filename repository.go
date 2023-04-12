@@ -22,11 +22,11 @@ func repositoryFiles(repos, nameOfModel string) error {
 
 	file, err := os.Create(repositoryPath + "/" + postgresPath + "/" + nameOfModel + ".go")
 	if err != nil {
-		return clear(err)
+		return clear("repository", err)
 	}
 	_, err = file.Write([]byte(repos))
 	if err != nil {
-		return clear(err)
+		return clear("repository", err)
 	}
 	return nil
 }

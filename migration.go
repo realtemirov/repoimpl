@@ -27,20 +27,20 @@ func migrationFiles(nameOfModel, create, drop string) error {
 
 	file, err := os.Create(fmt.Sprintf("%s/%s/01_create_%s.up.sql", migrationPath, postgresPath, nameOfModel))
 	if err != nil {
-		return clear(err)
+		return clear("migration", err)
 	}
 	_, err = file.Write([]byte(create))
 	if err != nil {
-		return clear(err)
+		return clear("migration", err)
 	}
 
 	file, err = os.Create(fmt.Sprintf("%s/%s/01_create_%s.down.sql", migrationPath, postgresPath, nameOfModel))
 	if err != nil {
-		return clear(err)
+		return clear("migration", err)
 	}
 	_, err = file.Write([]byte(drop))
 	if err != nil {
-		return clear(err)
+		return clear("migration", err)
 	}
 	return nil
 }

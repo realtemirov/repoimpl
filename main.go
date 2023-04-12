@@ -57,34 +57,37 @@ func NewRepository(datas ...any) error {
 	err := os.Mkdir(repositoryPath, 0755)
 	if err != nil {
 		if strings.Contains(err.Error(), "exists") {
-			fmt.Println("repository folder already exist, If you want to create new repository, click something else `y` or `Y`")
+			fmt.Println("repository folder already exist, If you want to create new repository click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
-			if answer == "q" || answer == "Q" {
+			if strings.ToLower(answer) != "y" {
 				return nil
 			}
 			err := os.RemoveAll(repositoryPath)
+			os.Mkdir(repositoryPath, 0755)
+			if err != nil {
+				fmt.Println(err.Error())
+				return err
+			}
+		}
+	}
+
+	err = os.Mkdir(repositoryPath+"/"+postgresPath, 0755)
+	if err != nil {
+		if strings.Contains(err.Error(), "exists") {
+			fmt.Println("repository/postgres folder already exist, If you want to create new repository/postgres click something else `y` or `Y`")
+			var answer string
+			fmt.Scanln(&answer)
+			if strings.ToLower(answer) != "y" {
+				return nil
+			}
+			err := os.RemoveAll(repositoryPath + "/" + postgresPath)
 			if err != nil {
 				return err
 			}
 		}
-	} else {
-		err := os.Mkdir(repositoryPath+"/"+postgresPath, 0755)
-		if err != nil {
-			if strings.Contains(err.Error(), "exists") {
-				fmt.Println("repository/postgres folder already exist, If you want to create new repository/postgres, click something else `y` or `Y`")
-				var answer string
-				fmt.Scanln(&answer)
-				if answer == "q" || answer == "Q" {
-					return nil
-				}
-				err := os.RemoveAll(repositoryPath + "/" + postgresPath)
-				if err != nil {
-					return err
-				}
-			}
-		}
 	}
+
 	storage.WriteString(storageHeader())
 	postgresUp.WriteString(postgresHeader())
 	for _, model := range datas {
@@ -100,12 +103,12 @@ func NewRepository(datas ...any) error {
 		log.Println("Starting repository...")
 		err = repositoryFiles(createRepository(upperNameOfModel, lowerNameOfModel, fieldsOfModel), lowerNameOfModel)
 		if err != nil {
-			return clear(err)
+			return clear("repository", err)
 		}
 		interfaceName, interfaceMethods := storageInterface(upperNameOfModel, lowerNameOfModel, fieldsOfModel)
 		storage.WriteString(interfaceName)
 		interfaces.WriteString(interfaceMethods)
-		log.Println("Successful repository implemented")
+
 		postgresUpString, postgresDownString := postgresInterface(upperNameOfModel, lowerNameOfModel)
 
 		postgresUp.WriteString(postgresUpString)
@@ -117,7 +120,7 @@ func NewRepository(datas ...any) error {
 	storage.WriteString(interfaces.String())
 	storageFile(storage.String())
 	postgresFile(postgresUp.String(), postgresDown.String())
-	log.Println("Succesfull implemented...")
+	log.Println("Successful repository implemented")
 	return nil
 }
 
@@ -128,7 +131,7 @@ func NewMigration(datas ...any) error {
 			fmt.Println("migration folder already exist, If you want to create new migration, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
-			if answer == "q" || answer == "Q" {
+			if strings.ToLower(answer) != "y" {
 				return nil
 			}
 			err := os.RemoveAll(migrationPath)
@@ -143,7 +146,7 @@ func NewMigration(datas ...any) error {
 				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
-				if answer == "q" || answer == "Q" {
+				if strings.ToLower(answer) != "y" {
 					return nil
 				}
 				err := os.RemoveAll(migrationPath + "/" + postgresPath)
@@ -183,7 +186,7 @@ func NewTest(datas ...any) error {
 			fmt.Println("test folder already exist, If you want to create new test, click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
-			if answer == "q" || answer == "Q" {
+			if strings.ToLower(answer) != "y" {
 				return nil
 			}
 			err := os.RemoveAll(testPath)
@@ -198,7 +201,7 @@ func NewTest(datas ...any) error {
 				fmt.Println("test/postgres folder already exist, If you want to create new test/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
-				if answer == "q" || answer == "Q" {
+				if strings.ToLower(answer) != "y" {
 					return nil
 				}
 				err := os.RemoveAll(testPath + "/" + postgresPath)
@@ -221,7 +224,7 @@ func NewTest(datas ...any) error {
 		log.Println("Starting test...")
 		err = testFiles(createTest(lowerNameOfModel, fieldsOfModel), lowerNameOfModel)
 		if err != nil {
-			return clear(err)
+			return clear("test", err)
 		}
 
 		log.Println("Successful test implemented")
@@ -230,32 +233,42 @@ func NewTest(datas ...any) error {
 	return nil
 }
 
-func clear(response error) error {
+func clear(data string, response error) error {
 
-	if _, err := os.Stat(migrationPath + "/" + postgresPath); os.IsExist(err) {
-		err = os.RemoveAll(migrationPath + "/" + postgresPath)
-		if err != nil {
-			log.Printf("Error: %v", err)
+	switch data {
+	case "repository":
+		{
+			if _, err := os.Stat(repositoryPath + "/" + postgresPath); os.IsExist(err) {
+				err = os.RemoveAll(repositoryPath + "/" + postgresPath)
+				if err != nil {
+					log.Printf("Error: %v", err)
+				}
+			} else {
+				log.Printf("Error: %v", err)
+			}
 		}
-	} else {
-		log.Printf("Error: %v", err)
-	}
-	if _, err := os.Stat(repositoryPath + "/" + postgresPath); os.IsExist(err) {
-		err = os.RemoveAll(repositoryPath + "/" + postgresPath)
-		if err != nil {
-			log.Printf("Error: %v", err)
+	case "migration":
+		{
+			if _, err := os.Stat(migrationPath + "/" + postgresPath); os.IsExist(err) {
+				err = os.RemoveAll(migrationPath + "/" + postgresPath)
+				if err != nil {
+					log.Printf("Error: %v", err)
+				}
+			} else {
+				log.Printf("Error: %v", err)
+			}
 		}
-	} else {
-		log.Printf("Error: %v", err)
-	}
-
-	if _, err := os.Stat(testPath + "/" + postgresPath); os.IsExist(err) {
-		err = os.RemoveAll(testPath + "/" + postgresPath)
-		if err != nil {
-			log.Printf("Error: %v", err)
+	case "test":
+		{
+			if _, err := os.Stat(testPath + "/" + postgresPath); os.IsExist(err) {
+				err = os.RemoveAll(testPath + "/" + postgresPath)
+				if err != nil {
+					log.Printf("Error: %v", err)
+				}
+			} else {
+				log.Printf("Error: %v", err)
+			}
 		}
-	} else {
-		log.Printf("Error: %v", err)
 	}
 
 	return response
@@ -283,7 +296,7 @@ func NewModels(datas ...any) error {
 				fmt.Println("migration/postgres folder already exist, If you want to create new migration/postgres, click something else `y` or `Y`")
 				var answer string
 				fmt.Scanln(&answer)
-				if answer == "q" || answer == "Q" {
+				if strings.ToLower(answer) != "y" {
 					return nil
 				}
 				err := os.RemoveAll(migrationPath + "/" + postgresPath)

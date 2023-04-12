@@ -11,11 +11,11 @@ func testFiles(tests, nameOfModel string) error {
 
 	file, err := os.Create(testPath + "/" + postgresPath + "/" + nameOfModel + ".go")
 	if err != nil {
-		return clear(err)
+		return clear("test", err)
 	}
 	_, err = file.Write([]byte(tests))
 	if err != nil {
-		return clear(err)
+		return clear("test", err)
 	}
 	return nil
 }
