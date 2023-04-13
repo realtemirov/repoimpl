@@ -46,6 +46,15 @@ func NewProject(datas ...any) error {
 	return nil
 }
 
+// Implement repository in storage folder
+// Parameters:
+//   - model... : implementation of models with table name and fields
+//
+// Example:
+//   - NewRepository(models.User{})
+//
+// Returns:
+//   - error: error if something went wrong
 func NewRepository(datas ...any) error {
 
 	var (
@@ -57,6 +66,7 @@ func NewRepository(datas ...any) error {
 	err := os.Mkdir(repositoryPath, 0755)
 	if err != nil {
 		if strings.Contains(err.Error(), "exists") {
+			
 			fmt.Println("repository folder already exist, If you want to create new repository click something else `y` or `Y`")
 			var answer string
 			fmt.Scanln(&answer)
