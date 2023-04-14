@@ -189,6 +189,7 @@ func NewMigration(datas ...any) error {
 
 	return nil
 }
+
 func NewTest(datas ...any) error {
 	err := os.Mkdir(testPath, 0755)
 	if err != nil {
